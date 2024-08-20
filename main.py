@@ -20,9 +20,10 @@ def decode_review(encoded_review):
     return ' '.join([reverse_word_index.get(i - 3, '?') for i in encoded_review])
 
 # Function to preprocess user input
-def preprocess_text(text):
+def preprocess_text(text,max_words=10000):
     words = text.lower().split()
     encoded_review = [word_index.get(word, 2) + 3 for word in words]
+    encoded_review = [min(index, max_words - 1) for index in encoded_review]
     padded_review = sequence.pad_sequences([encoded_review], maxlen=500)
     return padded_review
 
@@ -48,9 +49,6 @@ st.markdown('<p class="big-font">Enter a movie review to classify it as positive
 
 # User input
 user_input = st.text_area('🎥 Your Movie Review Here:', height=200, help="Write your thoughts about the movie.")
-
-# Add a slider to adjust text padding length
-padding_length = st.slider("Adjust Review Padding Length", 100, 500, 500)
 
 if st.button('🎯 Classify'):
     with st.spinner('Analyzing...'):
